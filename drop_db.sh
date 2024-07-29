@@ -14,4 +14,4 @@ else
         echo -e "${note} Database ${dbname} deleted succssfully. ${NC}"
     fi
 fi
-source master_menu.sh
+source main.sh

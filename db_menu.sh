@@ -19,7 +19,7 @@ case $option in
  "Update Table" )
     source table_update.sh;;
  "Back To Menu" )
-    source master_menu.sh;;
+    source main.sh;;
 * ) 
     echo -e "${invalid} Invalid option ${NC}" ;; 
 esac

@@ -16,4 +16,4 @@ else
 mkdir $path/$dbname
 echo -e "${note} Database ${dbname} created succssfully ${NC}"
 fi
-source master_menu.sh
+source main.sh
