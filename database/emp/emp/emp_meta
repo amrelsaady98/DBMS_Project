@@ -1,0 +1,4 @@
+id:INTEGER:4
+name:VARCHAR:24
+age:INTEGER:4
+sal:INTEGER:5

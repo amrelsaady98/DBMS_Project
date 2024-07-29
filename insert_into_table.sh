@@ -54,7 +54,7 @@ for ((i=0; i<${#names_array[@]}; i++)); do
             # Validate input based on data type using regex
             case ${types_array[$i]} in
                 "VARCHAR")
-                    if [[ ! $value =~ ^[a-zA-Z0-9_]+$ ]]; then
+                    if [[ ! $value =~ ^[a-zA-Z0-9_/s]+$ ]]; then
                         echo -e "${invalid}${names_array[$i]} must be a string.${NC}"
                     else
                         break

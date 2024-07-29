@@ -1,0 +1,68 @@
+#!/bin/bash
+
+column_names=$(cut -d: -f1 "emp_meta")
+#column_names=$(sed -n '1p' "$path/$dbname/$tablename")
+column_types=$(cut -d: -f2 "emp_meta")
+#column_types=$(sed -n '2p' "$path/$dbname/$tablename")
+column_length=$(cut -d: -f3 "emp_meta")
+
+
+# Prompt the user to enter the data for each column
+data=''
+IFS=$'\n' read -d '' -ra names_array <<< "$column_names"
+IFS=$'\n' read -d '' -ra types_array <<< "$column_types"
+IFS=$'\n' read -d '' -ra length_array <<< "$column_length"
+
+echo  "cols_count -------> ${#names_array[@]}"
+
+for(( i=0; i<${#names_array[@]}; i++ ));do
+  printf "-"
+  printf "%-${length_array[i]}s-+" "$(printf '%*s' "${length_array[i]}" | tr ' ' '-')"
+
+done
+printf "\n"
+
+for(( i=0; i<${#names_array[@]}; i++ ));do
+  printf " %-${length_array[$i]}s |" ${names_array[$i]}
+
+done
+
+printf "\n"
+
+center_align() {
+    local text="$1"
+    local width="$2"
+    local len=${#text}
+    local padding=$(( (width - len) / 2 ))
+#    printf "%${padding}s%s%${padding}s" "" "$text" ""
+
+    printf "%-${width}s" "$(printf "%-${padding}s%s" "" "$text")"
+}
+
+for(( i=0; i<${#names_array[@]}; i++ ));do
+  printf " %s |" "$(center_align ${names_array[$i]} ${length_array[$i]})"
+
+done
+
+printf "\n"
+
+for(( i=0; i<${#names_array[@]}; i++ ));do
+  printf "-"
+  printf "%-${length_array[i]}s-+" "$(printf '%*s' "${length_array[i]}" | tr ' ' '-')"
+
+done
+printf "\n"
+
+while IFS=: read -r -a fields; do
+    for ((i=0; i<${#names_array[@]}; i++)); do
+        printf " %-${length_array[$i]}s |" "${fields[$i]}"
+    done
+    printf "\n"
+done < "emp_data"
+
+for(( i=0; i<${#names_array[@]}; i++ ));do
+  printf "-"
+  printf "%-${length_array[i]}s-+" "$(printf '%*s' "${length_array[i]}" | tr ' ' '-')"
+
+done
+printf "\n"
