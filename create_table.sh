@@ -53,9 +53,9 @@ else
   #loop on number of columns (numcolumns) to get the name&type of each column (string || int || )
   column_name=('id')
   column_type=('integer')
-  temp_col_name=''
-  temp_col_type=''
-  columns_list=('id:INTEGER:8')
+#  temp_col_name=''
+#  temp_col_type=''
+  columns_list=('id:INTEGER:4')
   for ((i=2;i<=$numcolumns;i++))
   do
   read -p "Enter column ${i} Name : " colName
@@ -76,11 +76,11 @@ else
   do
   echo -e "${invalid} column ${colName} exist ${NC}"
   read -p "pls Enter Column $i Name : " colName
+  colName=$(echo "$colName" | tr ' ' '_')
   done
 
   # Append column name to the existing names
   column_name+="|$colName"
-
 
    # Get data type for the column
    echo -e "${note} Enter Data Types [VARCHAR|INTEGER|DATE] for column $colName ${NC}"
@@ -95,7 +95,8 @@ else
   column_type+="|INTEGER";
   columns_list+=("${colName}:INTEGER:$(echo -n $colName | wc -c)")
   break;;
-  "DATE" ) column_type+="|DATE";
+  "DATE" )
+  column_type+="|DATE";
   columns_list+=("${colName}:DATE:$(echo -n $colName | wc -c)")
   break;;
   * ) echo -e "${invalid}Invalid data type${NC}";
@@ -106,13 +107,12 @@ else
   done
 
   # write column name and thier datatype in the table file
-  echo $column_name >> $path/$dbname/$tablename
-  echo $column_type >> $path/$dbname/$tablename
-  echo -e "${note} your table [$tablename] metadata is : \n $column_name \n -----------------------------------------------------------------------------------------------------------------\n$column_type ${NC}"
-  echo ${columns_list}
   for i in "${!columns_list[@]}"; do
-    echo "Item $i: ${columns_list[$i]}"
+#    echo "Item $i: ${columns_list[$i]}"
     echo ${columns_list[$i]} >> $path/$dbname/$tablename/"${tablename}_meta"
-done
+  done
+  echo -e "${note} your table [$tablename] metadata is : \n $column_name \n -----------------------------------------------------------------------------------------------------------------\n$column_type ${NC}"
+#  echo ${columns_list}
+
 fi
 source db_menu.sh

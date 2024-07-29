@@ -20,8 +20,8 @@ column_names=$(cut -d: -f1 "$path/$dbname/$tablename/${tablename}_meta")
 column_types=$(cut -d: -f2 "$path/$dbname/$tablename/${tablename}_meta")
 #column_types=$(sed -n '2p' "$path/$dbname/$tablename")
 column_length=$(cut -d: -f3 "$path/$dbname/$tablename/${tablename}_meta")
-echo $column_names
-echo $column_types
+#echo $column_names
+#echo $column_types
 
 # Prompt the user to enter the data for each column
 data=''
@@ -29,8 +29,13 @@ IFS=$'\n' read -d '' -ra names_array <<< "$column_names"
 IFS=$'\n' read -d '' -ra types_array <<< "$column_types"
 IFS=$'\n' read -d '' -ra length_array <<< "$column_length"
 
-echo  "cols_count -------> ${#names_array[@]}"
-echo  "cols_count -------> ${#types_array[@]}"
+#echo ${#column_names[@]}
+#for ((i=0; i<${#column_names[@]}; i++)); do
+#  echo "after convert ----> ${column_names[i]}"
+#done
+
+#echo  "cols_count -------> ${#names_array[@]}"
+#echo  "cols_count -------> ${#types_array[@]}"
 #echo  "cols_count -------> ${types_array[2]}"
 
 for ((i=0; i<${#names_array[@]}; i++)); do
@@ -54,7 +59,7 @@ for ((i=0; i<${#names_array[@]}; i++)); do
             # Validate input based on data type using regex
             case ${types_array[$i]} in
                 "VARCHAR")
-                    if [[ ! $value =~ ^[a-zA-Z0-9_/s]+$ ]]; then
+                    if [[ ! $value =~ ^.{1,}$ ]]; then
                         echo -e "${invalid}${names_array[$i]} must be a string.${NC}"
                     else
                         break
@@ -68,7 +73,7 @@ for ((i=0; i<${#names_array[@]}; i++)); do
                     fi
                     ;;
                 "DATE")
-                    if [[ ! $value =~ ^[0-9]{1,2}-[0-9]{1,2}-[0-9]{4}$ ]]; then
+                    if [[ ! $value =~ ^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-([0-9]{4})$ ]]; then
                         echo -e "${invalid}${names_array[$i]} must be in DATE format (DD-MM-YYYY).${NC}"
                     else
                         break
@@ -79,10 +84,10 @@ for ((i=0; i<${#names_array[@]}; i++)); do
     done
 
     if [ ${length_array[$i]} -lt $(echo  $value | wc -c) ]; then
-        awk -v line_num=$(($i+1)) -v new_home=$(echo  $value | wc -c) -F: '
+        awk -v line_num=$(($i+1)) -v new_length=$(echo  $value | wc -c) -F: '
         {
             if (NR == line_num) {
-                $3 = new_home;
+                $3 = new_length;
             }
             print $0;
         }' OFS=: "$path/$dbname/$tablename/${tablename}_meta" > "$path/$dbname/$tablename/${tablename}_meta.tmp"
@@ -96,7 +101,8 @@ for ((i=0; i<${#names_array[@]}; i++)); do
     data+="$value:"
 done
 
-echo -e "$data"
+#echo -e "$data"
+# remove last seperator
 data=${data%":"}
 
 # Append the data to the table file
