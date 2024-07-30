@@ -9,12 +9,33 @@ ls -F $path"/"$dbname
 #<<<<<<< HEAD
 elif [[ $count  >   1 ]] ; then
 echo  -e "${note} **** You have [${count}] Tables  ****${NC}"
-ls -F $path"/"$dbname 
-#=======
-elif [[ $count  -gt   1 ]] ; then
-echo  -e "${note} **** You have [${count}] Tables  ****${NC}"
-ls  $path"/"$dbname
-#>>>>>>> 3d084c09873a9b393cb4e1202a6e1dc1abebe6df
+printf "+-%-20s-+\n" "$(printf '%*s' "20" | tr ' ' '-')"
+for entry in $path"/"$dbname/*; do
+    if [ -d "$entry" ]; then
+        mod_date=$(stat -c "%y" "$entry" | cut -d'.' -f1)
+        name=$(basename "$entry")
+
+        # Print each directory in a formatted way
+        printf "| %-20s |\n" "$name"
+        printf "+-%-20s-+\n" "$(printf '%*s' "20" | tr ' ' '-')"
+    fi
+done
+##=======
+#elif [[ $count  -gt   1 ]] ; then
+#echo  -e "${note} **** You have [${count}] Tables  ****${NC}"
+##ls  $path"/"$dbname
+#
+#printf "+-%-20s-+\n" "$(printf '%*s' "20" | tr ' ' '-')"
+#for entry in $path"/"$dbname/*; do
+#    if [ -d "$entry" ]; then
+#        mod_date=$(stat -c "%y" "$entry" | cut -d'.' -f1)
+#        name=$(basename "$entry")
+#
+#        # Print each directory in a formatted way
+#        printf "| %-20s |\n" "$name"
+#        printf "+-%-20s-+\n" "$(printf '%*s' "20" | tr ' ' '-')"
+#    fi
+#done
 
 else
 echo -e "${invalid} No Tables Found ${base}"

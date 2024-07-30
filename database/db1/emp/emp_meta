@@ -1,0 +1,3 @@
+id:INTEGER:4
+name:VARCHAR:13
+age:INTEGER:3

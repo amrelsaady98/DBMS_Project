@@ -1,0 +1,5 @@
+id:INTEGER:4
+name:VARCHAR:4
+age:INTEGER:3
+mail:VARCHAR:6
+phone:VARCHAR:6

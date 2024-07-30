@@ -49,24 +49,21 @@ if [ -d $path"/"$dbname"/"$tablename ] ; then
       case $choice in
       "Select All Records" )
 
-
-
-
-
-
+        printf '+';
         for(( i=0; i<${#names_array[@]}; i++ ));do
           printf "-"
-          printf "%-${length_array[i]}s-+" "$(printf '%*s' "${length_array[i]}" | tr ' ' '-')"
-
+          printf "%${length_array[i]}s-+" "$(printf '%*s' "${length_array[i]}" | tr ' ' '-')"
         done
         printf "\n"
 
+        printf '|';
         for(( i=0; i<${#names_array[@]}; i++ ));do
           printf " %s |" "$(center_align ${names_array[$i]} ${length_array[$i]})"
         done
 
         printf "\n"
 
+        printf "+"
         for(( i=0; i<${#names_array[@]}; i++ ));do
           printf "-"
           printf "%-${length_array[i]}s-+" "$(printf '%*s' "${length_array[i]}" | tr ' ' '-')"
@@ -75,12 +72,14 @@ if [ -d $path"/"$dbname"/"$tablename ] ; then
         printf "\n"
 
         while IFS=: read -r -a fields; do
+            printf "|";
             for ((i=0; i<${#names_array[@]}; i++)); do
                 printf " %-${length_array[$i]}s |" "${fields[$i]}"
             done
             printf "\n"
         done < "$path/$dbname/$tablename/${tablename}_data"
 
+        printf "+"
         for(( i=0; i<${#names_array[@]}; i++ ));do
           printf "-"
           printf "%-${length_array[i]}s-+" "$(printf '%*s' "${length_array[i]}" | tr ' ' '-')"
@@ -97,28 +96,27 @@ if [ -d $path"/"$dbname"/"$tablename ] ; then
             source db_menu.sh;
 
         else
-
-
-
           row=`awk -F":" -v id=$id '{if($1==id) print $0}' $path"/"$dbname"/"$tablename/$tablename"_data"`
 
           if [[ -z $row ]] ; then
                   echo -e "${invalid} Record Not Found ${NC}"
                   source db_menu.sh;
           else
+
+            printf '+'
             for(( i=0; i<${#names_array[@]}; i++ ));do
               printf "-"
               printf "%-${length_array[i]}s-+" "$(printf '%*s' "${length_array[i]}" | tr ' ' '-')"
-
             done
               printf "\n"
 
+            printf '|';
             for(( i=0; i<${#names_array[@]}; i++ ));do
               printf " %s |" "$(center_align ${names_array[$i]} ${length_array[$i]})"
             done
-
             printf "\n"
 
+            printf "+"
             for(( i=0; i<${#names_array[@]}; i++ ));do
               printf "-"
               printf "%-${length_array[i]}s-+" "$(printf '%*s' "${length_array[i]}" | tr ' ' '-')"
@@ -126,6 +124,7 @@ if [ -d $path"/"$dbname"/"$tablename ] ; then
             done
             printf "\n"
 
+            printf "|"
             while IFS=: read -r -a fields; do
               for ((i=0; i<${#names_array[@]}; i++)); do
                   printf " %-${length_array[$i]}s |" "${fields[$i]}"
@@ -133,66 +132,49 @@ if [ -d $path"/"$dbname"/"$tablename ] ; then
               printf "\n"
             done <<< "$row"
 
+            printf "+"
             for(( i=0; i<${#names_array[@]}; i++ ));do
               printf "-"
               printf "%-${length_array[i]}s-+" "$(printf '%*s' "${length_array[i]}" | tr ' ' '-')"
 
             done
             printf "\n"
-#              awk -v id=$id -F"|" ' { if(NR==1) print $0 }    {if(NR>2 && $1==id) print $0}' $path"/"$dbname"/"$tablename
           fi
         fi
         ;;
 
 
       "Select All Values in Specific Column")
-        columns=$(head -n 1 $path"/"$dbname"/"$tablename)
-          IFS='|' read -r -a col_array <<< "$columns"
+
               echo "Select the column to display all values:"
               select colname in "${names_array[@]}"; do
                   if [[ ! -z $colname ]]; then
+
+                      #TODO: use loop over names_array instead of awk
                       let col_index=$(awk -F":" -v colname="$colname" '{if ($1 == colname) {print NR; exit}}' $path"/"$dbname"/"$tablename"/"$tablename"_meta")
 #                      echo "col_index ----> $col_index"
                       col_index=$((col_index-1))
-#                      echo "col_index ----> $col_index"
-#                      col_list=$(awk -F":" -v col_index="$col_index" '{print $col_index}' $path"/"$dbname"/"$tablename"/"$tablename"_data")
-                      IFS=$'\n' read -d '' -ra cols_array <<< "$col_list"
-                      for col in "${cols_array[@]}"; do
-                        echo "$col"
-                      done
-#                      for(( i=0; i<${#names_array[@]}; i++ ));do
-                        printf "-"
-                        printf "%-${length_array[$col_index]}s-+" "$(printf '%*s' "${length_array[$col_index]}" | tr ' ' '-')"
 
-#                      done
+                      printf "+-"
+                      printf "%-${length_array[$col_index]}s-+" "$(printf '%*s' "${length_array[$col_index]}" | tr ' ' '-')"
                       printf "\n"
 
-#                      for(( i=0; i<${#names_array[@]}; i++ ));do
-                        printf " %s |" "$(center_align ${names_array[col_index]} ${length_array[$col_index]})"
-#                      done
-
+                      printf "| %s |" "$(center_align ${names_array[col_index]} ${length_array[$col_index]})"
                       printf "\n"
 
-#                      for(( i=0; i<${#names_array[@]}; i++ ));do
-                        printf "-"
-                        printf "%-${length_array[$col_index]}s-+" "$(printf '%*s' "${length_array[$col_index]}" | tr ' ' '-')"
-
-#                      done
+                      printf "+-"
+                      printf "%-${length_array[$col_index]}s-+" "$(printf '%*s' "${length_array[$col_index]}" | tr ' ' '-')"
                       printf "\n"
 
                       while IFS=: read -r -a fields; do
-#                          for ((i=0; i<${#names_array[@]}; i++)); do
-                              printf " %-${length_array[$col_index]}s |" "${fields[$col_index]}"
-#                          done
+                          printf "| %-${length_array[$col_index]}s |" "${fields[$col_index]}"
                           printf "\n"
                       done < "$path/$dbname/$tablename/${tablename}_data"
 
-#                      for(( i=0; i<${#names_array[@]}; i++ ));do
-                        printf "-"
-                        printf "%-${length_array[$col_index]}s-+" "$(printf '%*s' "${length_array[$col_index]}" | tr ' ' '-')"
-
-#                      done
+                      printf "+-"
+                      printf "%-${length_array[$col_index]}s-+" "$(printf '%*s' "${length_array[$col_index]}" | tr ' ' '-')"
                       printf "\n"
+
                   else
                       echo -e "${invalid} Invalid Option ${NC}"
                       source db_menu.sh;

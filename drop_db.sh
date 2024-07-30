@@ -11,7 +11,7 @@ else
     read ans
     if [[ $ans == "y" || $ans == "Y" ]] ; then 
         rm -r $path"/"$dbname 
-        echo -e "${note} Database ${dbname} deleted succssfully. ${NC}"
+        echo -e "${note} Database ${dbname} deleted successfully. ${NC}"
     fi
 fi
-source main.sh
+source main.bash

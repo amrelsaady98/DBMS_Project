@@ -37,3 +37,4 @@ case $choose in
         ;;
 esac
 done
+source master_menu.sh
